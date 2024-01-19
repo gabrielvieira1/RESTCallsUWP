@@ -35,7 +35,7 @@ namespace App1
       //client.DefaultRequestHeaders(); 
       //var text = await client.GetStringAsync("https://g1.globo.com/");
       
-      var response = await client.GetAsync("https://g1.globo.com/");
+      var response = await client.GetAsync("https://owasp.org/blog/2023/12/06/CycloneDX-attestations.html");
       var text = await response.Content.ReadAsStringAsync();
 
       var xml = XElement.Parse(text);
