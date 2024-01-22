@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -43,61 +44,15 @@ namespace App1
       var response = await client.GetAsync("https://localhost:44390/items");
       var text = await response.Content.ReadAsStringAsync();
 
-      //var items = await GetItemsAsync();
+      IList<Item> result = JsonConvert.DeserializeObject<List<Item>>(text);
+      var names = string.Join(", ", result.Select(t => t.Name));
 
-      //if (items != null)
-      //{
-      //  // Agora você pode trabalhar com a lista de items recebidos da API
-      //  foreach (var item in items)
-      //  {
-      //    // Faça o que precisar com cada item (por exemplo, exibir os nomes)
-      //    Debug.WriteLine($"Item Name: {item.Name}");
-      //  }
-      //}
-      //else
-      //{
-      //  // Trate o caso de falha na requisição
-      //  Debug.WriteLine("Falha ao obter os itens da API.");
-      //}
-
-      using (var stream = await response.Content.ReadAsStreamAsync())
-      {
-        var serializer = new DataContractJsonSerializer(typeof(List<Item>));
-        var itemDtos = (List<Item>)serializer.ReadObject(stream);
-
-        var names = string.Join(", ", itemDtos.Select(dto => dto.Name));
-
-        Result.Text = names;
-      }
-
-      //Result.Text = text;
+      Result.Text = names;
 
       //var xml = XElement.Parse(text);
       //var titles = xml.Element("channel").Elements("item").Select(i => i.Element("title").Value);
       ////Result.Text = text;
       //Result.Text = string.Join("\r\n", titles);
-    }
-
-    public async Task<IEnumerable<Item>> GetItemsAsync()
-    {
-      using (var client = new HttpClient())
-      {
-        var response = await client.GetAsync("https://localhost:44390/items");
-
-        if (response.IsSuccessStatusCode)
-        {
-          var stream = await response.Content.ReadAsStreamAsync();
-          var serializer = new DataContractJsonSerializer(typeof(List<Item>));
-          var items = (List<Item>)serializer.ReadObject(stream);
-
-          return items;
-        }
-        else
-        {
-          // Lidar com erros, se necessário
-          return null;
-        }
-      }
     }
   }
   public class Rootobject
